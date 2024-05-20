@@ -151,6 +151,23 @@ public TreeNode<E> getNode(E value, TreeNode<E> node) {
 		return null;
 	}
 
+	public TreeNode<E> recursiveSearch(TreeNode<E> node,E value){
+		if(node==null){ 
+			System.out.println("No such node "+value+" in the tree");
+			return null;
+		}
+		int compare = node.value.compareTo(value);
+		System.out.println("current at:"+node.value+" compare:"+compare);
+		if(compare==0){
+			System.out.println("Found the node "+value+" at:"+node.toString());
+			return node;
+		}else if(compare<0){
+			return recursiveSearch(node.right,value);
+		}else{
+			return recursiveSearch(node.left,value);
+		}
+	}		
+
 	//delete the the node and its subnodes
 	public void deleteSubTree(E value){	
 		TreeNode<E> current = root;
@@ -213,6 +230,8 @@ public TreeNode<E> getNode(E value, TreeNode<E> node) {
 		}
 	}
 
+
+	//my verbose way before the course
 	public void insertNode(E value){
 		TreeNode<E> node = new TreeNode<E>(value,null);
 		TreeNode<E> current = root;
@@ -252,24 +271,20 @@ public TreeNode<E> getNode(E value, TreeNode<E> node) {
 					break;
 				}
 			}
-
-			/* insert in the middle of two nodes, does not work
-			if(node.value.compareTo(current.value)<0&&node.value.compareTo(current.left.value)>0){
-				node.parent = current;
-				node.left = current.left;
-				node.parent.left = node;
-			}
-			if(node.value.compareTo(current.value)>0&&node.value.compareTo(current.right.value)<0){
-				node.parent = current;
-				node.right = current.right;
-				node.parent.right = node;
-			}
-			*/
 			System.out.println("---------current loop ended---------");
 		}
 	}
 
+	//the right way, return the whole tree with the new node
+	public void insertRecur(TreeNode<E> node,E value){
+		if(node==null) return new TreeNode<E>(value,node);
+		int compare = value.compareTo(node.value);
+		if(compare<0) node.left = insertRecur(node.left,value);
+		else if(compare>0) node.right = insertRecur(node.right,value);
+		return node;//maintain the tree structure
+	}
 
+	// the concise way in the course
 	public boolean insert(E toInsert){
 		TreeNode<E> curr = root;
 		int comp = toInsert.compareTo(curr.value);
@@ -393,8 +408,18 @@ public TreeNode<E> getNode(E value, TreeNode<E> node) {
 		for(int k=0;k<cityList.size();k++) System.out.println(cityList.get(k));
 		citiesBalanced.createBalancedTree(cityList);
 		citiesBalanced.levelOrder();
-	
+		
+		System.out.println("----------test recursiveSearch------------");
+		citiesBalanced.recursiveSearch(citiesBalanced.root,"Beijing");
+		citiesBalanced.recursiveSearch(citiesBalanced.root,"Moscow");
 
+		System.out.println("---------test recursiveInsert-------------");
+		citiesBalanced.insertRecur(citiesBalanced.root,"Altlantis");
+		citiesBalanced.insertRecur(citiesBalanced.root,"Saint Denis");
+		System.out.println("after insert:");
+		citiesBalanced.levelOrder();
+	
+	
 	}
 	
 
